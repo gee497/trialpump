@@ -1,0 +1,30 @@
+import { useEffect } from "react";
+import { Connection, clusterApiUrl } from "@solana/web3.js";
+import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
+import { useWallet } from "@solana/wallet-adapter-react";
+import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
+
+export default function PhantomLogin() {
+    const { publicKey, connected } = useWallet();
+    const network = WalletAdapterNetwork.Devnet;
+    const connection = new Connection(clusterApiUrl(network));
+
+    useEffect(() => {
+        if (connected && publicKey) {
+            console.log("User signed in with wallet:", publicKey.toBase58());
+        }
+    }, [connected, publicKey]);
+
+    return (
+        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 text-white p-5">
+            <h1 className="text-3xl font-bold">Connect Your Phantom Wallet</h1>
+            <p className="mt-2 text-gray-400">Sign in to access the dApp</p>
+            <div className="mt-5">
+                <WalletMultiButton />
+            </div>
+            {connected && publicKey && (
+                <p className="mt-5 text-green-400">Connected as: {publicKey.toBase58()}</p>
+            )}
+        </div>
+    );
+}
